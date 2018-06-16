@@ -1,2 +1,4 @@
-# listOfGoods3
-listOfGoods3
+npm install
+npm run dev
+npm run build
+
