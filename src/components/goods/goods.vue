@@ -51,7 +51,7 @@
     </div>
     <shopCart :deliveryPrice="Number(seller.deliveryPrice)" :minPrice = "Number(seller.minPrice)" :selectFoods="selectFoods"></shopCart>
     <foodDetail :food="selectedFood" v-if="selectedFood" ref="myFood" :selectFoods="selectFoods"></foodDetail>
-    
+
   </div>
 
 </template>
@@ -205,7 +205,7 @@ export default {
       });
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
         click: true,
-        probeType: 1
+        probeType: 3
       });
       // 监控滚动事件
       this.foodsScroll.on('scroll', (pos) => {
@@ -323,7 +323,7 @@ export default {
         padding 0 .12rem 0 .12rem
         .text
           font-weight bold
-          // font-size .28rem    
+          // font-size .28rem
       .menu-item:after
           position: absolute
           content: ''
@@ -337,7 +337,7 @@ export default {
           line-height .32rem
           // .iconMap
           //   vertical-align middle
-            
+
     .foods-wrapper
       width 5.7rem
       margin-top: 0;

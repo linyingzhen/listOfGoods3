@@ -72,25 +72,6 @@
         <transition name="fade-backdrop">
             <div class="backdrop" v-show="showBackdrop" @click="hideBackdrop"></div>
         </transition>
-        <div class="order-mode" v-if="(shopType==1&&orderMode==0&&orderModeIs==false&&tid<1)">
-          <span class="mode-close" v-on:click="changeOrderModeIs()"><span class="back">&nbsp;</span></span>
-          <p class="order-mode-text">请选择用餐方式</p>
-          <ul class="mode-list">
-            <li>
-              <span v-on:click="changeOrderMode(1)"><img src="/static/images/pop_ico1.png" alt=""></span>
-              <p>极速点餐</p>
-            </li>
-            <li>
-              <span v-on:click="changeOrderMode(2)"><img src="/static/images/pop_ico2.png" alt=""></span>
-              <p>美味不用等</p>
-            </li>
-            <li>
-              <span v-on:click="changeOrderMode(3)"><img src="/static/images/pop_ico3.png" alt=""></span>
-              <p>满30元外送</p>
-            </li>
-          </ul>
-        </div>
-        <div class="zhizhao" v-if="(shopType==1&&orderMode==0&&orderModeIs==false&&tid<1)" @touchmove.prevent>&nbsp</div>
     </div>
 </template>
 
@@ -130,25 +111,11 @@ export default {
       }],
       dropBalls: [],
       listShow: false,
-      orderMode:0,
-      orderModeIs:false,
-      shopType:"",
       tid:""
     }
   },
   created() {
-    this.shopType = foodsData.seller.shop_type
     this.tid = postData.tid
-    switch(this.shopType*1) {
-      case 3:
-        this.orderMode = 2
-        break;
-      case 2:
-        this.orderMode = 3
-        break;
-      default:
-        this.orderMode = 0  
-    }
     this.$root.eventHub.$on('cart.add', this.drop)
   },
   computed: {
@@ -195,22 +162,6 @@ export default {
     }
   },
   methods: {
-    changeOrderMode(number) {
-      this.orderMode = number
-      let total = 0
-      this.selectFoods.forEach((food) => {
-        if (food.count) {
-          total += food.price * food.count
-        }
-      })
-      total = total.toFixed(2)
-      if(total > 0) {
-        this.goPay();
-      }
-    },
-    changeOrderModeIs() {
-      this.orderModeIs = true
-    },
     drop(el) {
       for (let i = 0, l = this.balls.length; i < l; i++) {
         let ball = this.balls[i]
@@ -274,10 +225,6 @@ export default {
       }
     },
     goPay() {
-      if(this.orderMode == 0 && this.shopType == 1 && this.tid < 1) {
-        this.orderModeIs = false
-        return
-      }
       if (this.totalPrice > this.minPrice) {
         var tid=this.tid;
         var newselectFoodsArr = [];
@@ -307,8 +254,6 @@ export default {
           newselectFoodsArr.push(newfoodObj);
         });
 
-          postData.meal_type = this.orderMode;
-          save_mealType();
 
         $.ajax({
           url: postData.url,
@@ -570,67 +515,4 @@ export default {
   display: inline-block
   height: .3rem
   line-height: .3rem
-.order-mode
-  width 6.8rem
-  height 5.53rem 
-  position fixed
-  left 0.35rem
-  top 2.2rem
-  background-color #fff
-  z-index 10001
-  background-color #ffffff;
-  border-radius 0.14rem;
-  .order-mode-text
-    font-size .36rem
-    line-height 4
-    color #666
-    text-align center
-  .mode-list
-    overflow hidden
-    li
-      width 2rem
-      float left
-      margin-left .2rem
-      span,img
-        display block
-        width 2rem
-        height 2.7rem
-      p   
-        text-align center
-        font-size .24rem
-        line-height 4
-        color #999
-  .mode-close
-    width .6rem
-    height .6rem
-    padding-bottom .1rem
-    background-image url('../../images/btn_close.png') 
-    background-size 100%
-    background-repeat no-repeat
-    text-align center
-    color white
-    position absolute
-    top: -0.9rem
-    left:3.11rem
-    z-index: 1000
-    .back
-      width .6rem
-      height .6rem
-.zhizhao
-  overflow hidden
-  position fixed
-  width 100%
-  height 100%
-  top 0
-  bottom 0
-  left 0
-  right 0
-  background rgba(7,17,27,0.6)
-  backdrop-filter blur(10px)
-  z-index 10000
-  &.fade-backdrop-enter-active,&.fade-backdrop-leave-active
-    transition opacity 0.5s
-  &.fade-backdrop-enter,&.fade-backdrop-leave-active
-    opacity 0      
-
 </style>
